@@ -13,10 +13,10 @@ public sealed class ImageValidator : AbstractValidator<IFormFile>
         _configuration = configuration;
 
         RuleFor(file => file)
-            .Must(BeValidImage);
+            .Must(BeAllowedContentType);
     }
 
-    private bool BeValidImage(IFormFile file)
+    private bool BeAllowedContentType(IFormFile file)
     {
         if (file == null || file.Length == 0)
         {

@@ -117,7 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Age" xml:space="preserve">
+    <value>ფიზიკური პირი უნდა იყოს მინიმუმ 18 წლის.</value>
+  </data>
   <data name="FirstNameGeorgianOrEnglish" xml:space="preserve">
-    <value>'First Name' უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასეობს.</value>
+    <value>სახელი უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასოებს.</value>
+  </data>
+  <data name="ImageContentType" xml:space="preserve">
+    <value>სურათის მედია ტიპი არ არის დაშვებული.</value>
+  </data>
+  <data name="LastNameGeorgianOrEnglish" xml:space="preserve">
+    <value>გვარი უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასოებს</value>
+  </data>
+  <data name="PersonalNumberOnylNumbers" xml:space="preserve">
+    <value>პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს.</value>
   </data>
 </root>

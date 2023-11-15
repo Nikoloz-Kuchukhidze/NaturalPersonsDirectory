@@ -117,7 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Age" xml:space="preserve">
+    <value>The natural person must be older than 18 years.</value>
+  </data>
   <data name="FirstNameGeorgianOrEnglish" xml:space="preserve">
-    <value>'First Name' must only contain Georgian or English letters.</value>
+    <value>First name must only contain Georgian or English letters.</value>
+  </data>
+  <data name="ImageContentType" xml:space="preserve">
+    <value>Image media type is not allowed.</value>
+  </data>
+  <data name="LastNameGeorgianOrEnglish" xml:space="preserve">
+    <value>Last name must only contain Georgian or English letters.</value>
+  </data>
+  <data name="PersonalNumberOnlyNumbers" xml:space="preserve">
+    <value>Personal number must only contain numbers.</value>
   </data>
 </root>

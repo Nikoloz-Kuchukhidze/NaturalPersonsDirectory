@@ -12,7 +12,7 @@ public sealed record CreateNaturalPersonCommand(
     Gender Gender,
     string PersonalNumber,
     DateOnly BirthDate,
-    IFormFile? Image,
+    IFormFile Image,
     int CityId,
     IEnumerable<NaturalPersonRelationCommand>? Relations,
     IEnumerable<CreatePhoneCommand> Phones) : IRequest<NaturalPersonResponse>;

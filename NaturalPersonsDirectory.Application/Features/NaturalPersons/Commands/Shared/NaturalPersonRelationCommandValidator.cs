@@ -6,7 +6,7 @@ public sealed class NaturalPersonRelationCommandValidator : AbstractValidator<Na
 {
     public NaturalPersonRelationCommandValidator()
     {
-        // TODO: Define enum values
-        RuleFor(x => x.RelationType);
+        RuleFor(x => x.RelationType)
+            .IsInEnum();
     }
 }

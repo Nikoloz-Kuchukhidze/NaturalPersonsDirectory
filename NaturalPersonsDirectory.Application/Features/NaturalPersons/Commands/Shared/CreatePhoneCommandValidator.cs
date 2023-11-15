@@ -10,7 +10,7 @@ public sealed class CreatePhoneCommandValidator : AbstractValidator<CreatePhoneC
             .MinimumLength(4)
             .MaximumLength(50);
 
-        // TODO: Define only enum values
-        RuleFor(x => x.Type);
+        RuleFor(x => x.Type)
+            .IsInEnum();
     }
 }

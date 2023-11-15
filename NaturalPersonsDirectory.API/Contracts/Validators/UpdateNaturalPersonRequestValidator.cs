@@ -1,32 +1,45 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Localization;
 using NaturalPersonsDirectory.API.Contracts.NaturalPersons;
-using NaturalPersonsDirectory.Application.Common.Constants;
+using NaturalPersonsDirectory.Application.Common.Resources;
+using NaturalPersonsDirectory.Application.Common.Utils.Validators;
+using NaturalPersonsDirectory.Domain.Common.Utils;
 
 namespace NaturalPersonsDirectory.API.Contracts.Validators;
 
 public class UpdateNaturalPersonRequestValidator : AbstractValidator<UpdateNaturalPersonRequest>
 {
-    public UpdateNaturalPersonRequestValidator()
+    public UpdateNaturalPersonRequestValidator(
+        IStringLocalizer<ValidationMessages> _localizer,
+        IDateTimeProvider dateTimeProvider)
     {
         RuleFor(x => x.FirstName)
             .MinimumLength(2)
             .MaximumLength(50)
-            .Must(ContainOnlyGeorgianOrEnglishLetters)
+            .Must(TextValidator.ContainOnlyGeorgianOrEnglishLetters)
+            .WithMessage(_localizer["FirstNameGeorgianOrEnglish"])
             .When(x => !string.IsNullOrWhiteSpace(x.FirstName));
 
         RuleFor(x => x.LastName)
             .MinimumLength(2)
             .MaximumLength(50)
-            .Must(ContainOnlyGeorgianOrEnglishLetters)
+            .Must(TextValidator.ContainOnlyGeorgianOrEnglishLetters)
+            .WithMessage(_localizer["LastNameGeorgianOrEnglish"])
             .When(x => !string.IsNullOrWhiteSpace(x.LastName));
-    }
 
-    private bool ContainOnlyGeorgianOrEnglishLetters(string text)
-    {
-        var containsOnlyGeorgian = text.All(c => c >= UnicodeCharacter.GeorgianFirstLetter && c <= UnicodeCharacter.GeorgianLastLetter);
+        RuleFor(x => x.PersonalNumber)
+            .Length(11)
+            .Must(TextValidator.ContainOnlyNumbers)
+            .WithMessage(_localizer["PersonalNumberOnlyNumbers"])
+            .When(x => !string.IsNullOrWhiteSpace(x.PersonalNumber));
 
-        var containsOnlyEnglish = text.All(c => (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
+        RuleFor(x => x.BirthDate)
+            .Must(birthdate => AgeValidator.BeOlderThanEighteen(birthdate!.Value, dateTimeProvider.Now))
+            .WithMessage(_localizer["Age"])
+            .When(x => x.BirthDate.HasValue);
 
-        return containsOnlyGeorgian || containsOnlyEnglish;
+        RuleFor(x => x.Gender)
+            .IsInEnum()
+            .When(x => x.Gender.HasValue);
     }
 }
