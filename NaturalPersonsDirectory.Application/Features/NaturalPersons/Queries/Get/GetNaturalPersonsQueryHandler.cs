@@ -1,7 +1,10 @@
 ﻿using MediatR;
+using NaturalPersonsDirectory.Application.Common.Extensions;
 using NaturalPersonsDirectory.Application.Features.NaturalPersons.Shared;
 using NaturalPersonsDirectory.Application.Infrastructure.Repositories;
 using NaturalPersonsDirectory.Domain.Common.Paging;
+using NaturalPersonsDirectory.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace NaturalPersonsDirectory.Application.Features.NaturalPersons.Queries.Get;
 
@@ -16,11 +19,36 @@ internal sealed class GetNaturalPersonsQueryHandler : IRequestHandler<GetNatural
 
     public async Task<IPagedList<NaturalPersonResponse>> Handle(GetNaturalPersonsQuery request, CancellationToken cancellationToken)
     {
-        // TODO: if null or white space don't pass in expression
+        var predicates = new List<Expression<Func<NaturalPerson, bool>>>();
+
+        if (!string.IsNullOrWhiteSpace(request.FirstName))
+        {
+            predicates.Add(x => x.FirstName.Contains(request.FirstName));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.LastName))
+        {
+            predicates.Add(x => x.LastName.Contains(request.LastName));
+        }
+
+        if (!string.IsNullOrEmpty(request.PersonalNumber))
+        {
+            predicates.Add(x => x.PersonalNumber.Contains(request.PersonalNumber));
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        {
+            predicates.Add(x =>
+                (x.PersonalNumber.Contains(request.SearchTerm) ||
+                x.FirstName.Contains(request.SearchTerm) ||
+                x.LastName.Contains(request.SearchTerm) ||
+                x.City!.Name.Contains(request.SearchTerm)));
+        }
+
+        var predicate = predicates.Aggregate((current, next) => current.And(next));
+
         var naturalPersons = await _naturalPersonRepository.GetWithPagingAsync(
-            x => x.FirstName.Contains(request.FirstName ?? string.Empty) &&
-                x.LastName.Contains(request.LastName ?? string.Empty) &&
-                x.PersonalNumber.Contains(request.PersonalNumber ?? string.Empty),
+            predicate,
             request.Page,
             request.PageSize,
             cancellationToken: cancellationToken);

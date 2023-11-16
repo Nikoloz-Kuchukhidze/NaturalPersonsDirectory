@@ -34,7 +34,6 @@ internal sealed class GetNaturalPersonByIdQueryHandler : IRequestHandler<GetNatu
             cancellationToken: cancellationToken,
             includes: new Expression<Func<NaturalPerson, object>>[]
             {
-                x => x.City!,
                 x => x.Phones,
                 x => x.Relations
             });

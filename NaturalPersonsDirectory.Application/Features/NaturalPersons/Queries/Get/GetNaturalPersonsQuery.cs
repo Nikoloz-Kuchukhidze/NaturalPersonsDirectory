@@ -8,6 +8,7 @@ namespace NaturalPersonsDirectory.Application.Features.NaturalPersons.Queries.Ge
 public sealed record GetNaturalPersonsQuery(
     int? Page,
     int? PageSize,
+    string SearchTerm,
     string? FirstName,
     string? LastName,
     string? PersonalNumber) : PagingRequest(Page, PageSize), IRequest<IPagedList<NaturalPersonResponse>>;

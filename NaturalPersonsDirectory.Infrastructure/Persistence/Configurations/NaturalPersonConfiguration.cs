@@ -70,5 +70,8 @@ public sealed class NaturalPersonConfiguration : IEntityTypeConfiguration<Natura
         builder.HasOne(x => x.City)
             .WithMany()
             .HasForeignKey(x => x.CityId);
+
+        builder.Navigation(x => x.City)
+            .AutoInclude();
     } 
 }
