@@ -124,10 +124,13 @@
     <value>სახელი უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასოებს.</value>
   </data>
   <data name="ImageContentType" xml:space="preserve">
-    <value>სურათის მედია ტიპი არ არის დაშვებული.</value>
+    <value>სურათის მედია ტიპი არ არის ნებადართული.</value>
   </data>
   <data name="LastNameGeorgianOrEnglish" xml:space="preserve">
-    <value>გვარი უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასოებს</value>
+    <value>გვარი უნდა შეიცავდეს მხოლოდ ქართულ ან მხოლოდ ინგლისურ ასოებს.</value>
+  </data>
+  <data name="NotAllowedFileExtension" xml:space="preserve">
+    <value>ფაილის ფორმატი არ არის ნებადართული.</value>
   </data>
   <data name="PersonalNumberOnylNumbers" xml:space="preserve">
     <value>პირადი ნომერი უნდა შეიცავდეს მხოლოდ ციფრებს.</value>

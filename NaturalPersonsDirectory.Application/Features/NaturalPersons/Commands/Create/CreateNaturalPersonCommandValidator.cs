@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
+using NaturalPersonsDirectory.Application.Common.Constants;
 using NaturalPersonsDirectory.Application.Common.Resources;
 using NaturalPersonsDirectory.Application.Common.Utils.Validators;
 using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
@@ -14,21 +15,21 @@ public sealed class CreateNaturalPersonCommandValidator : AbstractValidator<Crea
     public CreateNaturalPersonCommandValidator(
         IDateTimeProvider dateTimeProvider,
         IConfiguration configuration,
-        IStringLocalizer<ValidationMessages> _localizer)
+        IStringLocalizer<ValidationMessages> localizer)
     {
         RuleFor(x => x.FirstName)
             .NotEmpty()
             .MinimumLength(2)
             .MaximumLength(50)
             .Must(TextValidator.ContainOnlyGeorgianOrEnglishLetters)
-            .WithMessage(_localizer["FirstNameGeorgianOrEnglish"]);
+            .WithMessage(localizer[ValidationMessageKey.FirstNameGeorgianOrEnglish]);
 
         RuleFor(x => x.LastName)
             .NotEmpty()
             .MinimumLength(2)
             .MaximumLength(50)
             .Must(TextValidator.ContainOnlyGeorgianOrEnglishLetters)
-            .WithMessage(_localizer["LastNameGeorgianOrEnglish"]);
+            .WithMessage(localizer[ValidationMessageKey.LastNameGeorgianOrEnglish]);
 
         RuleFor(x => x.Gender)
             .IsInEnum();
@@ -37,15 +38,16 @@ public sealed class CreateNaturalPersonCommandValidator : AbstractValidator<Crea
             .NotEmpty()
             .Length(11)
             .Must(TextValidator.ContainOnlyNumbers)
-            .WithMessage(_localizer["PersonalNumberOnlyNumbers"]);
+            .WithMessage(localizer[ValidationMessageKey.PersonalNumberOnlyNumbers]);
 
         RuleFor(x => x.BirthDate)
             .NotEmpty()
             .Must(BirthDate => AgeValidator.BeOlderThanEighteen(BirthDate, dateTimeProvider.Now))
-            .WithMessage(_localizer["Age"]);
+            .WithMessage(localizer[ValidationMessageKey.Age]);
 
         RuleFor(x => x.Image)
-            .SetValidator(new ImageValidator(configuration));
+            .NotEmpty()
+            .SetValidator(new ImageRequestValidator(configuration, localizer));
 
         RuleFor(x => x.Phones)
             .NotEmpty();

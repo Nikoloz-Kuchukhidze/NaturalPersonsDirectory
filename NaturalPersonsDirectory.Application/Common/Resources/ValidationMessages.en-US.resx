@@ -129,6 +129,9 @@
   <data name="LastNameGeorgianOrEnglish" xml:space="preserve">
     <value>Last name must only contain Georgian or English letters.</value>
   </data>
+  <data name="NotAllowedFileExtension" xml:space="preserve">
+    <value>File format is not allowed.</value>
+  </data>
   <data name="PersonalNumberOnlyNumbers" xml:space="preserve">
     <value>Personal number must only contain numbers.</value>
   </data>

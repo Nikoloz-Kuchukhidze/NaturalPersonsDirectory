@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
 using NaturalPersonsDirectory.Application.Infrastructure.FileStorage;
 using Supabase.Storage;
 
@@ -21,13 +22,28 @@ internal sealed class FileService : IFileService
 
         var bytes = await ReadAllBytes(file);
 
-        var extension = GetFileExtension(file);
+        var extension = GetFileExtension(file.FileName);
 
         var path = $"{fileName}.{extension}";
 
         await _client.Storage
             .From(_bucketName)
             .Upload(bytes, path);
+
+        return path;
+    }
+
+    public async Task<string> UploadFile(ImageRequest image, string fileName)
+    {
+        await CreateBucketIfNotExists();
+
+        var extension = GetFileExtension(image.FileName);
+
+        var path = $"{fileName}.{extension}";
+
+        await _client.Storage
+            .From(_bucketName)
+            .Upload(image.Data, path);
 
         return path;
     }
@@ -70,10 +86,10 @@ internal sealed class FileService : IFileService
         return memoryStream.ToArray();
     }
 
-    private string GetFileExtension(IFormFile file)
+    private string GetFileExtension(string fileName)
     {
-        var lastIndexOfDot = file.FileName.LastIndexOf('.');
-        return file.FileName.Substring(lastIndexOfDot + 1);
+        var lastIndexOfDot = fileName.LastIndexOf('.');
+        return fileName.Substring(lastIndexOfDot + 1);
     }
 
     private string RemoveFileExtension(string path)

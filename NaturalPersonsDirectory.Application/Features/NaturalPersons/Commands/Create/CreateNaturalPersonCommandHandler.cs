@@ -99,7 +99,6 @@ internal sealed class CreateNaturalPersonCommandHandler : IRequestHandler<Create
         var filePath = await _fileService.UploadFile(request.Image, fileName);
 
         naturalPerson.AddImage(filePath);
-
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return naturalPerson.Adapt<NaturalPersonResponse>();
