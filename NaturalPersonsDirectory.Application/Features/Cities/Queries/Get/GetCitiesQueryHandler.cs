@@ -16,7 +16,7 @@ internal sealed class GetCitiesQueryHandler : IRequestHandler<GetCitiesQuery, IP
 
     public async Task<IPagedList<CityResponse>> Handle(GetCitiesQuery request, CancellationToken cancellationToken)
     {
-        var cities = await _cityRepository.GetAsync(
+        var cities = await _cityRepository.GetWithPagingAsync(
             _ => true,
             request.Page,
             request.PageSize,

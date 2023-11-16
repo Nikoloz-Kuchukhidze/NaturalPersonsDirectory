@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Localization;
 using NaturalPersonsDirectory.Application.Common.Exceptions;
 using NaturalPersonsDirectory.Application.Common.Resources;
+using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
 using NaturalPersonsDirectory.Application.Features.NaturalPersons.Shared;
 using NaturalPersonsDirectory.Application.Infrastructure.FileStorage;
 using NaturalPersonsDirectory.Application.Infrastructure.FileStorage.Constants;
@@ -65,16 +66,9 @@ internal sealed class CreateNaturalPersonCommandHandler : IRequestHandler<Create
                 _localizer);
         }
 
-        var phoneExists = await _phoneRepository.ExistAsync(
-            x => request.Phones.Select(y => y.Number).Contains(x.Number) && x.NaturalPersonId != null,
-            cancellationToken);
+        var phones = await GetIfValidPhones(request.Phones, cancellationToken);
 
-        if (phoneExists)
-        {
-            throw new PhoneBelongsToSomeoneElseException(_localizer);
-        }
-
-        if(request.Relations != null && request.Relations.Any())
+        if (request.Relations != null && request.Relations.Any())
         {
             var relatedNaturalPersonsExist = await _naturalPersonRepository.ExistAsync(
                 x => request.Relations.Select(y => y.RelatedNaturalPersonId).Contains(x.Id) && x.IsActive,
@@ -85,8 +79,6 @@ internal sealed class CreateNaturalPersonCommandHandler : IRequestHandler<Create
                 throw new RelatedNaturalPersonNotFoundException(_localizer);
             }
         }
-
-        var phones = request.Phones.Adapt<IEnumerable<Phone>>();
 
         var relations = request.Relations?.Adapt<IEnumerable<NaturalPersonRelation>>();
 
@@ -111,5 +103,33 @@ internal sealed class CreateNaturalPersonCommandHandler : IRequestHandler<Create
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return naturalPerson.Adapt<NaturalPersonResponse>();
+    }
+
+    private async Task<IEnumerable<Phone>> GetIfValidPhones(
+        IEnumerable<CreatePhoneCommand> phones,
+        CancellationToken cancellationToken)
+    {
+        var existingPhones = await _phoneRepository.GetAsync(
+            x => phones.Select(y => y.Number).Contains(x.Number),
+            asNoTracking: false,
+            cancellationToken);
+
+        var phoneBelongsToSomeoneElse = existingPhones
+            .Any(x => x.NaturalPersonId != null);
+
+        if (phoneBelongsToSomeoneElse)
+        {
+            throw new PhoneBelongsToSomeoneElseException(_localizer);
+        }
+
+        var newPhones = phones
+            .Where(phone =>
+                !existingPhones.Select(x => x.Number).Contains(phone.Number))
+            .Select(phone => phone.Adapt<Phone>())
+            .ToList();
+
+        newPhones.AddRange(existingPhones);
+
+        return newPhones;
     }
 }

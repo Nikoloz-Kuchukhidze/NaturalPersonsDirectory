@@ -51,7 +51,6 @@ internal sealed class GetNaturalPersonByIdQueryHandler : IRequestHandler<GetNatu
         var response = naturalPerson.Adapt<NaturalPersonResponse>();
         response.Image = await _fileService.GetFilePublicUrl(naturalPerson.Image!);
 
-        // TODO: mapping configuration
         return response;
     }
 }

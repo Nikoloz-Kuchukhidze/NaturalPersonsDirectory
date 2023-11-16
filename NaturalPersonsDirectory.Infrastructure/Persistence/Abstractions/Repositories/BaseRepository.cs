@@ -38,7 +38,7 @@ public class BaseRepository<TEntity, TIdentifier, TDbContext> : IRepository<TEnt
             .AnyAsync(predicate, cancellationToken);
     }
 
-    public async Task<IPagedList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, int? page = null, int? pageSize = null, bool asNoTracking = true, CancellationToken cancellationToken = default)
+    public async Task<IPagedList<TEntity>> GetWithPagingAsync(Expression<Func<TEntity, bool>> predicate, int? page = null, int? pageSize = null, bool asNoTracking = true, CancellationToken cancellationToken = default)
     {
         var data = _dbContext
                 .Set<TEntity>()
@@ -61,5 +61,14 @@ public class BaseRepository<TEntity, TIdentifier, TDbContext> : IRepository<TEnt
         }
 
         return await query.SingleOrDefaultAsync(predicate, cancellationToken);
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = true, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext
+            .Set<TEntity>()
+            .AsNoTracking(asNoTracking)
+            .Where(predicate)
+            .ToListAsync();
     }
 }

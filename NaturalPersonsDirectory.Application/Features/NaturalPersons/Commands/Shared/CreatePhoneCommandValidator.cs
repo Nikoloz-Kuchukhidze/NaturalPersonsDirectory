@@ -7,6 +7,7 @@ public sealed class CreatePhoneCommandValidator : AbstractValidator<CreatePhoneC
     public CreatePhoneCommandValidator()
     {
         RuleFor(x => x.Number)
+            .NotEmpty()
             .MinimumLength(4)
             .MaximumLength(50);
 

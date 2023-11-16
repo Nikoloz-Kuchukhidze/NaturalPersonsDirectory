@@ -101,21 +101,28 @@ internal sealed class UpdateNaturalPersonCommandHandler : IRequestHandler<Update
         IEnumerable<CreatePhoneCommand>? phones,
         CancellationToken cancellationToken)
     {
-        // TODO: if existing ids do not belong to anyone we will add them to natural person
         if (phones != null && phones.Any())
         {
-            var phoneBelongsToSomeoneElse = await _phoneRepository.ExistAsync(
-                x => phones.Select(y => y.Number).Contains(x.Number)
-                    && phones.Select(y => y.Id).Contains(x.Id)
-                    && naturalPerson.Id != x.NaturalPersonId,
-                cancellationToken);
+            var existingPhones = await _phoneRepository.GetAsync(
+                x => phones.Select(y => y.Number).Contains(x.Number),
+                cancellationToken: cancellationToken);
+
+            var phoneBelongsToSomeoneElse = existingPhones
+                .Any(x => x.NaturalPersonId != null && 
+                    x.NaturalPersonId != naturalPerson.Id);
 
             if (phoneBelongsToSomeoneElse)
             {
                 throw new PhoneBelongsToSomeoneElseException(_localizer);
             }
 
-            var newPhones = phones.Adapt<IEnumerable<Phone>>();
+            var newPhones = phones
+                .Where(phone =>
+                    !existingPhones.Select(x => x.Number).Contains(phone.Number))
+                .Select(phone => phone.Adapt<Phone>())
+                .ToList();
+
+            newPhones.AddRange(existingPhones);
 
             naturalPerson.UpdatePhones(newPhones);
         }

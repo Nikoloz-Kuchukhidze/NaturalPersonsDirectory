@@ -17,7 +17,7 @@ internal sealed class GetNaturalPersonsQueryHandler : IRequestHandler<GetNatural
     public async Task<IPagedList<NaturalPersonResponse>> Handle(GetNaturalPersonsQuery request, CancellationToken cancellationToken)
     {
         // TODO: if null or white space don't pass in expression
-        var naturalPersons = await _naturalPersonRepository.GetAsync(
+        var naturalPersons = await _naturalPersonRepository.GetWithPagingAsync(
             x => x.FirstName.Contains(request.FirstName ?? string.Empty) &&
                 x.LastName.Contains(request.LastName ?? string.Empty) &&
                 x.PersonalNumber.Contains(request.PersonalNumber ?? string.Empty),

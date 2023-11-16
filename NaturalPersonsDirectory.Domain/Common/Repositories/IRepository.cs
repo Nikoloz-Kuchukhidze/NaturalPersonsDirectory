@@ -12,7 +12,9 @@ public interface IRepository<TEntity, TIdentifier>
 
     Task<TEntity?> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = true, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includes);
 
-    Task<IPagedList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, int? page = null, int? pageSize = null, bool asNoTracking = true, CancellationToken cancellationToken = default);
+    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> predicate, bool asNoTracking = true, CancellationToken cancellationToken = default);
+
+    Task<IPagedList<TEntity>> GetWithPagingAsync(Expression<Func<TEntity, bool>> predicate, int? page = null, int? pageSize = null, bool asNoTracking = true, CancellationToken cancellationToken = default);
     
     Task<bool> ExistAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
     

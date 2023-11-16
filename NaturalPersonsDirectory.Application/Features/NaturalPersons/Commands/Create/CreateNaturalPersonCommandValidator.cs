@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using NaturalPersonsDirectory.Application.Common.Resources;
 using NaturalPersonsDirectory.Application.Common.Utils.Validators;
+using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
 using NaturalPersonsDirectory.Application.Features.NaturalPersons.Shared.Validators;
 using NaturalPersonsDirectory.Domain.Common.Utils;
 
@@ -45,5 +46,11 @@ public sealed class CreateNaturalPersonCommandValidator : AbstractValidator<Crea
 
         RuleFor(x => x.Image)
             .SetValidator(new ImageValidator(configuration));
+
+        RuleFor(x => x.Phones)
+            .NotEmpty();
+
+        RuleForEach(x => x.Phones)
+            .SetValidator(new CreatePhoneCommandValidator());
     }
 }

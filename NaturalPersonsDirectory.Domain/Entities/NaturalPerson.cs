@@ -126,8 +126,6 @@ public sealed class NaturalPerson : Entity<long>, IAuditableEntity
         PersonalNumber = personalNumber;
     }
 
-    // TEST: may be cause error for existing numbers
-    // BUG: existing duplicate key error 
     public void UpdatePhones(IEnumerable<Phone> phones)
     {
         _phones.Clear();

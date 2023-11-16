@@ -3,6 +3,7 @@ using Microsoft.Extensions.Localization;
 using NaturalPersonsDirectory.API.Contracts.NaturalPersons;
 using NaturalPersonsDirectory.Application.Common.Resources;
 using NaturalPersonsDirectory.Application.Common.Utils.Validators;
+using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
 using NaturalPersonsDirectory.Domain.Common.Utils;
 
 namespace NaturalPersonsDirectory.API.Contracts.Validators;
@@ -41,5 +42,9 @@ public class UpdateNaturalPersonRequestValidator : AbstractValidator<UpdateNatur
         RuleFor(x => x.Gender)
             .IsInEnum()
             .When(x => x.Gender.HasValue);
+
+        RuleForEach(x => x.Phones)
+            .SetValidator(new CreatePhoneCommandValidator())
+            .When(x => x.Phones != null && x.Phones.Any());
     }
 }

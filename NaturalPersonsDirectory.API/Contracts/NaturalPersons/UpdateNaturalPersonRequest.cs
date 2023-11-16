@@ -1,4 +1,4 @@
-﻿using NaturalPersonsDirectory.API.Contracts.Phones;
+﻿using NaturalPersonsDirectory.Application.Features.NaturalPersons.Commands.Shared;
 using NaturalPersonsDirectory.Domain.Enums;
 
 namespace NaturalPersonsDirectory.API.Contracts.NaturalPersons;
@@ -10,4 +10,4 @@ public sealed record UpdateNaturalPersonRequest(
     string? PersonalNumber,
     DateOnly? BirthDate,
     int? CityId,
-    IEnumerable<CreatePhoneRequest>? Phones);
+    IEnumerable<CreatePhoneCommand>? Phones);
