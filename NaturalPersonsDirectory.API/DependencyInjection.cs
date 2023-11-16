@@ -2,6 +2,7 @@
 using FluentValidation.AspNetCore;
 using Mapster;
 using NaturalPersonsDirectory.API.Common.Converters;
+using NaturalPersonsDirectory.API.Filters.Swagger;
 using NaturalPersonsDirectory.API.Middlewares;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -55,7 +56,10 @@ public static class DependencyInjection
     {
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(options =>
+        {
+            options.OperationFilter<AcceptLanguageHeaderFilter>();
+        });
 
         return services;
     }
